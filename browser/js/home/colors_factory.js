@@ -36,6 +36,7 @@ app.factory('ColorFact', function(){
 
     ColorGroup.prototype.setThreshold = function(threshold){
     	var minimumCount = Math.round(threshold * this.totalpixels);
+        console.log(minimumCount);
     	this.significantArr = this.pixelarr.filter(function(ele){
     		return ele.count >= minimumCount;
     	});

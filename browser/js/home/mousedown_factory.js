@@ -71,8 +71,6 @@ app.factory('MouseDownFact', function(){
 
     var getPlacement = function(e){
         var selection = {};
-        console.log(e);
-        console.log(initialClient);
         if (initialClient.x >= e.offsetX){
             selection.left = e.offsetX;
             selection.width = initialClient.x - e.offsetX;
@@ -87,7 +85,7 @@ app.factory('MouseDownFact', function(){
             selection.top = initialClient.y;
             selection.height =  e.offsetY - initialClient.y;
         }
-        console.log(selection);
+        
 
         return selection;
     };

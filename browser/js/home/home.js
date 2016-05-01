@@ -8,10 +8,11 @@ app.config(function ($stateProvider) {
 
 app.controller('Home', function($scope, HomeFact, MouseDownFact){
 	var ctx1;
-	var ctx2;	
+	var ctx2;
+	var imgDimensions = {};	
 	HomeFact.ReSize('tiger')
 		.then(function(resizedImg){
-			var imgDimensions = {imgX: resizedImg.length, imgY: resizedImg[0].length};
+			imgDimensions = {imgX: resizedImg.length, imgY: resizedImg[0].length};
 			$('#canvas1').data(imgDimensions);
 			ctx1 = $('#canvas1').get(0).getContext('2d');
 			ctx2 = $('#canvas2').get(0).getContext('2d');
@@ -26,7 +27,6 @@ app.controller('Home', function($scope, HomeFact, MouseDownFact){
 
 	
 	var selectPixels = function(e) {
-		console.log(e);
 		$('document').unbind("mousedown", selectPixels);
 		MouseDownFact.selectPixels(e);
 		$('#canvas1').bind("mousemove", MouseDownFact.openSelector);
@@ -40,11 +40,12 @@ app.controller('Home', function($scope, HomeFact, MouseDownFact){
       	
       	var sampleImage = HomeFact.SetPixelSample(ctx1, selectedRange.left, selectedRange.top, selectedRange.width, selectedRange.height);
       	
-      	// var filteredImage = HomeFact.FilterImagebySample(ctx1, $('#canvas1').data().imgX, $('#canvas1').data().imgY, 0);
+      	var filteredImage = HomeFact.FilterImagebySample(0);
+      	console.log(filteredImage.length);
       	$scope.sample = HomeFact.GetPixelSample().pixelarr;
 
 		$scope.$digest();
-        HomeFact.DrawImage(ctx2, sampleImage);
+        HomeFact.DrawImage(ctx2, filteredImage);
     };
 
 

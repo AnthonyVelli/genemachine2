@@ -1,7 +1,7 @@
 app.factory('HomeFact', function($http, ColorFact){
 	var HomeFact = {};
 	var pixelSample;
-	var image;
+	var pixelEntire;
     var canvas = [];
 
 	HomeFact.ReSize = function(animal){
@@ -12,9 +12,9 @@ app.factory('HomeFact', function($http, ColorFact){
 	};
 
     HomeFact.SetImage = function(ctx, x, y){
-        image = getImageData(ctx, x, y);
+        pixelEntire = getImageData(ctx, 0, 0, x, y);
         var grouping = new ColorFact.ColorGroup();
-        image.forEach(function(ele){
+        pixelEntire.forEach(function(ele){
             grouping.place(ele.image.data);
         });
         return grouping.pixelarr;
@@ -35,10 +35,10 @@ app.factory('HomeFact', function($http, ColorFact){
 
 
 
-    HomeFact.FilterImagebySample = function(ctx, x, y, threshold){
-        var pixelImage = getImageData(ctx, x, y);
+    HomeFact.FilterImagebySample = function(threshold){
         pixelSample.setThreshold(threshold);
-        return pixelSample.filter(pixelImage);
+        console.log(pixelSample);
+        return pixelSample.filter(pixelEntire);
     };
 
 
