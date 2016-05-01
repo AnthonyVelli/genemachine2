@@ -2,7 +2,7 @@ app.factory('HomeFact', function($http, ColorFact){
 	var HomeFact = {};
 	var pixelSample;
 	var pixelEntire;
-    var canvas = [];
+    var imgDimensions = {};
 
 	HomeFact.ReSize = function(animal){
 		return $http.get('/api/images/'+animal)
@@ -12,6 +12,8 @@ app.factory('HomeFact', function($http, ColorFact){
 	};
 
     HomeFact.SetImage = function(ctx, x, y){
+        imgDimensions.x = x;
+        imgDimensions.y = y;
         pixelEntire = getImageData(ctx, 0, 0, x, y);
         var grouping = new ColorFact.ColorGroup();
         pixelEntire.forEach(function(ele){
@@ -34,11 +36,23 @@ app.factory('HomeFact', function($http, ColorFact){
 	};
 
 
-
-    HomeFact.FilterImagebySample = function(threshold){
-        pixelSample.setThreshold(threshold);
-        console.log(pixelSample);
-        return pixelSample.filter(pixelEntire);
+// WORKING!!!
+    // HomeFact.FilterImagebySample = function(threshold){
+    //     pixelSample.setThreshold(threshold);
+    //     return pixelSample.filter(pixelEntire);
+    // };
+    HomeFact.FilterImagebySample = function(){
+        var sections = pixelSample.filter(pixelEntire, imgDimensions);
+        var approved = pixelSample.returnApproved();
+        console.log('full image ',pixelEntire.length);
+        console.log('approved ',approved.length);
+        console.log('denied ',pixelSample.returnDenied().length);
+        pixelSample.filterBySection();
+        var approvedPostFilter = pixelSample.returnApproved();
+        console.log('full image ',pixelEntire.length);
+        console.log('approvedPostFilter ',approvedPostFilter.length);
+        console.log('deniedPostFilter ',pixelSample.returnDenied().length);
+        return [approved, approvedPostFilter];
     };
 
 
@@ -84,31 +98,32 @@ app.factory('HomeFact', function($http, ColorFact){
 	    return pixelArr;
 	}
 
-    function sectionImageData(pixelArr, width, height){
-    	var pixelImageSectioned = getImageData(pixelArr, width, height);
-		pixelImageSectioned = pixelImageSectioned.map(function(section){
-			var stats = new ColorFact.ColorGroup([]);
-				section.forEach(function(pxl){
-					stats.place(pxl.image.data);
-				});
-			return {stats: stats, pixels: section};
-		});
-    	var widthSize = Math.ceil(width/10 );
-    	var heightSize = Math.ceil(height/10);
-    	var dividedPixelArr = [];
-    	pixelArr.forEach(function(ele){
-    		var idx = (Math.floor(ele.x / widthSize)) + (Math.floor(ele.y / heightSize)*10);
-    		if (!dividedPixelArr[idx]){
-    			 dividedPixelArr[idx]= [];
-    		}
-    		dividedPixelArr[idx].push(ele);
-    	});
-    	return dividedPixelArr;
-    }
+  //   function sectionImageData(pixelArr){
+  //   	var pixelImageSectioned = getImageData(pixelArr, width, height);
+		// pixelImageSectioned = pixelImageSectioned.map(function(section){
+		// 	var stats = new ColorFact.ColorGroup([]);
+		// 		section.forEach(function(pxl){
+		// 			stats.place(pxl.image.data);
+		// 		});
+		// 	return {stats: stats, pixels: section};
+		// });
+  //   	var widthSize = Math.ceil(imgDimensions.y/10 );
+  //   	var heightSize = Math.ceil(imgDimensions.x/10);
+  //   	var dividedPixelArr = [];
+  //   	pixelArr.forEach(function(ele){
+  //   		var idx = (Math.floor(ele.x / widthSize)) + (Math.floor(ele.y / heightSize)*10);
+  //   		if (!dividedPixelArr[idx]){
+  //   			 dividedPixelArr[idx]= [];
+  //   		}
+  //   		dividedPixelArr[idx].push(ele);
+  //   	});
+  //   	return dividedPixelArr;
+  //   }
 
 	
 
 	return HomeFact;
 
 });
+
 

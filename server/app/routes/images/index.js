@@ -10,7 +10,7 @@ var imgPath = __dirname.replace(/app.*/, 'db/images/');
 router.get('/:animal', function (req, res, next) {
 	Jimp.read(imgPath+req.params.animal+'.jpg')
 	.then(function(img){
-		img.scaleToFit(500,500);
+		img.scaleToFit(500,450);
 		var width = img.bitmap.width;
 		var height = img.bitmap.height;
 		var pixelArr = [];
