@@ -1,0 +1,10 @@
+	<div class='color-table'>
+
+			<div class='color-scroll'>
+					<div class='color-repeater'ng-repeat="color in colors | orderBy: '-count'">
+						<div class='colorcount'>{{color.count}}</div>
+						<div class='colordisplay' style='background-color: rgb({{color.refpixel[0]}}, {{color.refpixel[1]}}, {{color.refpixel[2]}})'></div>
+					</div>
+			</div>
+
+	</div>

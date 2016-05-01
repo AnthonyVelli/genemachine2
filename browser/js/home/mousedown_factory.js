@@ -2,14 +2,16 @@ app.factory('MouseDownFact', function(){
 	var MouseDownFact = {};
     var initialW;
     var initialH;
-
+    var initialClient = {};
     MouseDownFact.selectPixels = function(e) {
-        // $("#big-ghost").remove();
+        $("#big-ghost").remove();
         $(".ghost-select").addClass("ghost-active");
         $(".ghost-select").css({
             'left': e.pageX,
             'top': e.pageY
         });
+        initialClient.x = e.offsetX;
+        initialClient.y = e.offsetY;
 
         initialW = e.pageX;
         initialH = e.pageY;
@@ -38,10 +40,13 @@ app.factory('MouseDownFact', function(){
                 "top": e.pageY
             });
         }
+
     };
 
     MouseDownFact.completeSelection = function(e){
+        
         var $box = $('.ghost-select')[0];
+        
         var width = $box.offsetWidth;
         var top = $box.offsetTop;
         var left = $box.offsetLeft;
@@ -61,12 +66,30 @@ app.factory('MouseDownFact', function(){
                 'top': 0,
                 'left': 0
             });
-        $(".colors-selected").addClass("ghost-active");
-        $(".colors-selected").css({
-                'top': 0,
-                'left': 0
-            });
-        return({left: left, top: top, width: width, height: height});
+        return(getPlacement(e));
+    };
+
+    var getPlacement = function(e){
+        var selection = {};
+        console.log(e);
+        console.log(initialClient);
+        if (initialClient.x >= e.offsetX){
+            selection.left = e.offsetX;
+            selection.width = initialClient.x - e.offsetX;
+        } else {
+            selection.left = initialClient.x;
+            selection.width =  e.offsetX - initialClient.x;
+        }
+        if (initialClient.y >= e.offsetY){
+            selection.top = e.offsetY;
+            selection.height = initialClient.y - e.offsetY;
+        } else {
+            selection.top = initialClient.y;
+            selection.height =  e.offsetY - initialClient.y;
+        }
+        console.log(selection);
+
+        return selection;
     };
 
 	return MouseDownFact;

@@ -9,13 +9,15 @@ app.config(function ($stateProvider) {
 app.controller('Home', function($scope, HomeFact, MouseDownFact){
 	var ctx1;
 	var ctx2;	
-	HomeFact.ReSize('deer')
+	HomeFact.ReSize('tiger')
 		.then(function(resizedImg){
 			var imgDimensions = {imgX: resizedImg.length, imgY: resizedImg[0].length};
 			$('#canvas1').data(imgDimensions);
 			ctx1 = $('#canvas1').get(0).getContext('2d');
 			ctx2 = $('#canvas2').get(0).getContext('2d');
 			HomeFact.DrawImage(ctx1, HomeFact.ConverttoImageData(ctx1, resizedImg));
+			$scope.allcolors = HomeFact.SetImage(ctx1, imgDimensions.imgX, imgDimensions.imgY);
+			$('#canvas1').bind("mousedown", selectPixels);
 		})
 		.catch(function(error){
 			console.error('error');
@@ -23,23 +25,28 @@ app.controller('Home', function($scope, HomeFact, MouseDownFact){
 		});
 
 	
-	$scope.selectPixels = function(e) {
+	var selectPixels = function(e) {
+		console.log(e);
+		$('document').unbind("mousedown", selectPixels);
 		MouseDownFact.selectPixels(e);
 		$('#canvas1').bind("mousemove", MouseDownFact.openSelector);
         $('#canvas1').bind("mouseup", filterBySelect);
-		console.log($scope.$id);
 	};
 
 	var filterBySelect = function(e){
-		$('#canvas1').unbind("mousemove", MouseDownFact.openSelector);
-        $('#canvas1').unbind("mouseup", filterBySelect);
-		var selectedRange = MouseDownFact.completeSelection(e);
-      	HomeFact.SetPixelSample(ctx1, selectedRange.left, selectedRange.top, selectedRange.width, selectedRange.height);
-      	var filteredImage = HomeFact.FilterImagebySample(ctx1, $('#canvas1').data().imgX, $('#canvas1').data().imgY, 0);
+		$('document').unbind("mousemove", MouseDownFact.openSelector);
+        $('document').unbind("mouseup", filterBySelect);
+		var selectedRange = MouseDownFact.completeSelection(e, ctx1);
+      	
+      	var sampleImage = HomeFact.SetPixelSample(ctx1, selectedRange.left, selectedRange.top, selectedRange.width, selectedRange.height);
+      	
+      	// var filteredImage = HomeFact.FilterImagebySample(ctx1, $('#canvas1').data().imgX, $('#canvas1').data().imgY, 0);
       	$scope.sample = HomeFact.GetPixelSample().pixelarr;
+
 		$scope.$digest();
-        HomeFact.DrawImage(ctx2, filteredImage);
+        HomeFact.DrawImage(ctx2, sampleImage);
     };
+
 
 });
 

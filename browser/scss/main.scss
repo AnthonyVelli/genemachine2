@@ -4,6 +4,8 @@
 
 body {
   background: #fdfdfd;
+  position: fixed;
+  background-image: url('laboratory.jpg');
 }
 
 @mixin clearfix {
@@ -19,9 +21,13 @@ body {
   margin: 0 auto;
 }
 
-body {
+.mainholder {
   display: flex;
   flex-direction: row;
+  height: 100vh;
+  width: 100vw;
+  position: absolute;
+  justify-content: flex-start;
   
 }
 
@@ -56,20 +62,45 @@ body {
   cursor: default !important;
 }
 
-.colors-selected {
-  display: none;
-  z-index: 10000;
-  position: absolute !important;
-  cursor: default !important;
+.colordisplay{
+  width: 75%;
 }
 
-.color-selected > span {
-  background-color: rgba(239, 28, 190, 0.6);
-  border: 1px solid #b20e8c;
-  width: 100%;
-  height: 100%;
-  float: left;
+.colorcount{
+  text-align: right;
+  width: 25%;
 }
+
+.canvas-holder{
+  padding: auto;
+  width: 40vw;
+  height: 100vh;
+}
+
+.color-table{
+  height: auto;
+}
+
+.color-scroll{
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 100vh;
+
+
+}
+
+.color-repeater{
+  display: flex;
+  flex-direction: row;
+}
+
+
+
+colorlist {
+  width: 50px;
+}
+
+
 
 @import 'directives/main';
 @import 'home/main';

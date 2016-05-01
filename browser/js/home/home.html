@@ -1,16 +1,11 @@
-
-	<canvas id="canvas1" ng-mousedown='selectPixels($event, $element)' width=500 height=500></canvas>
-	<canvas id="canvas2" width=500 height=500>></canvas>
-	<div class="colors-selected">
-		<table class='color-table'>
-			<tbody >
-				<tr ng-repeat="color in sample | orderBy: '-count'">
-					<td>{{color.count}}</td>
-					<td style='width: 40px; background-color: rgb({{color.refpixel[0]}}, {{color.refpixel[1]}}, {{color.refpixel[2]}})'></td>
-				</tr>
-			</tbody>
-		</table>
+	<colorlist colors='allcolors'></colorlist>
+	<div class='canvas-holder'>
+		<canvas id="canvas1" width='500' height='500'></canvas>
 	</div>
+	<div class='canvas-holder'>
+		<canvas id="canvas2" width='500' height='500'>></canvas>
+	</div>
+	<colorlist colors='sample'></colorlist>
 
 	<div class="ghost-select"><span></span></div></div>
 
