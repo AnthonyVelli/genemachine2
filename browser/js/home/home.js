@@ -43,13 +43,20 @@ app.controller('Home', function($scope, HomeFact, MouseDownFact){
 		var selectedRange = MouseDownFact.completeSelection(e, ctx1);
       	
       	var sampleImage = HomeFact.SetPixelSample(ctx1, selectedRange.left, selectedRange.top, selectedRange.width, selectedRange.height);
-      	
       	var filteredImages = HomeFact.FilterImagebySample();
       	$scope.sample = HomeFact.GetPixelSample().pixelarr;
-
 		$scope.$digest();
-        HomeFact.DrawImage(ctx2, filteredImages[0]);
-        HomeFact.DrawImage(ctx3, filteredImages[1]);
+		HomeFact.SVM()
+		.then(function(machineSuggested){
+
+			HomeFact.ConvertRawtoImageData(ctx2, machineSuggested);
+			// HomeFact.DrawImage(ctx2, filteredImages[0]);
+        	// HomeFact.DrawImage(ctx3, filteredImages[1]);
+        	// HomeFact.DrawImage(ctx4, filteredImages[2]);
+		})
+		.catch(function(err){console.error(err); });
+
+  
     };
 
 

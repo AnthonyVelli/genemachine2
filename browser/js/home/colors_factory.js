@@ -1,4 +1,6 @@
 app.factory('ColorFact', function(){
+    
+
 	var ColorGroup = function(pixelArr){
     	this.totalpixels = 0;
     	this.pixelarr = [];
@@ -8,7 +10,9 @@ app.factory('ColorFact', function(){
     	   }, this); 
         }
         this.filteredBySection = [];
-
+        this.sortedbyX = [];
+        this.sortedbyY = [];
+        this.senses = null;
     };
 
     ColorGroup.prototype.place = function(pixel){
@@ -18,6 +22,54 @@ app.factory('ColorFact', function(){
     	})) {
     		this.pixelarr.push(new Color(pixel));
     	}
+    };
+
+
+    ColorGroup.prototype.beginHunt = function(arr, imgDimensions){
+        this.sortByAxis(arr);
+        var xMid = Math.round(this.sortedbyX.length /2);
+        var yMid = Math.round(this.sortedbyY.length /2);
+        this.senses = new Vision({x: xMid, y: 0}, this.sortedbyX);
+        var test = 0;
+        while (!this.senses.circumnavigation){
+            console.log(this.senses.currentCoordinate);
+            console.log(this.senses.travels);
+            this.senses.LookAround();
+            this.senses.ThinkAboutIt();
+            test++;
+            if (test > 10000) {
+                console.log(this.senses.findings);
+                return this.senses.findings; 
+            }
+        }
+    };
+
+    ColorGroup.prototype.sortByAxis = function(arr){
+        arr = arr.map(function(ele){
+            if (this.pixelarr.some(function(ele2){
+                return ele2.compare(ele.image.data);
+            })) {
+                ele.result = true;
+            } else {
+                ele.result = false;
+            }
+            return ele;
+
+        }, this);
+        arr.forEach(function(ele){
+            if (!this.sortedbyX[ele.x]) {
+                this.sortedbyX[ele.x] = [];
+                this.sortedbyX[ele.x][ele.y] = ele;
+            } else {
+                this.sortedbyX[ele.x][ele.y] = ele;
+            }
+            if (!this.sortedbyY[ele.y]) {
+                this.sortedbyY[ele.y] = [];
+                this.sortedbyY[ele.y][ele.x] = ele;
+            } else {
+                this.sortedbyY[ele.y][ele.x] = ele;
+            }
+        }, this);
     };
 
 
@@ -35,6 +87,8 @@ app.factory('ColorFact', function(){
     	}, this);
         return this.filteredBySection;
     };
+
+
 
     ColorGroup.prototype.returnApproved = function(){
         return this.filteredBySection.reduce(function(origin, ele){
@@ -69,35 +123,7 @@ app.factory('ColorFact', function(){
             this.filteredBySection[idx][section].push(ele);
         }
     };
-    // ColorGroup.prototype.addToApproved = function(ele, section){
-    //     var idx = (Math.floor(ele.x / width)) + (Math.floor(ele.y / height)*10);
-    //     if (!this.filteredBySection[idx]){
-    //          this.filteredBySection[idx] = {};
-    //          this.filteredBySection[idx].total = 1;
-    //          this.filteredBySection[idx].approved = [ele];
-    //     } else if (!this.filteredBySection[idx].approved) {
-    //         this.filteredBySection[idx].total++;
-    //         this.filteredBySection[idx].approved = [ele];
-    //     } else {
-    //         this.filteredBySection[idx].total++;
-    //         this.filteredBySection[idx].approved.push(ele);
-    //     }
-    // };
 
-    // ColorGroup.prototype.addToDenied = function(ele){
-    //     var idx = (Math.floor(ele.x / width)) + (Math.floor(ele.y / height)*10);
-    //     if (!this.filteredBySection[idx]){
-    //          this.filteredBySection[idx] = {};
-    //          this.filteredBySection[idx].total = 1;
-    //          this.filteredBySection[idx].denied = [ele];
-    //     } else if (!this.filteredBySection[idx].denied) {
-    //         this.filteredBySection[idx].total++;
-    //         this.filteredBySection[idx].denied = [ele];
-    //     } else {
-    //         this.filteredBySection[idx].total++;
-    //         this.filteredBySection[idx].denied.push(ele);
-    //     }
-    // };
 
     ColorGroup.prototype.filterBySection = function(){
         this.filteredBySection.forEach(function(ele){
@@ -115,28 +141,17 @@ app.factory('ColorFact', function(){
     };
 
 
-    // ColorGroup.prototype.filterBySection = function(arr){ 
-    // 	var noOutliers = this.ColorGroups.filter(function(ele){
-    // 		return ele.count > threshold;
-    // 	});
-    // 	return arr.filter(function(ele){
-    // 		if (Boolean(this.ColorGroups.find(function(ele2){
-    // 			return ele2.compare(ele.image.data);
-    // 		}))) {return true; } 
-    // 	}, this);
-    // };
-
     var Color = function(pixel){
     	this.refpixel = pixel;
     	this.count = 1;
     };
 
     Color.prototype.compare = function(pixel){
-    	if (Math.abs(this.refpixel[0] - pixel[0]) > 5) {
+    	if (Math.abs(this.refpixel[0] - pixel[0]) > 10) {
     		return false;
-    	} else if (Math.abs(this.refpixel[1] - pixel[1]) > 5) {
+    	} else if (Math.abs(this.refpixel[1] - pixel[1]) > 10) {
     		return false;
-    	} else if (Math.abs(this.refpixel[2] - pixel[2]) > 5) {
+    	} else if (Math.abs(this.refpixel[2] - pixel[2]) > 10) {
     		return false;
     	} else {
     		return true;
