@@ -49,10 +49,10 @@ app.controller('Home', function($scope, HomeFact, MouseDownFact){
 		HomeFact.SVM()
 		.then(function(machineSuggested){
 
-			HomeFact.ConvertRawtoImageData(ctx2, machineSuggested);
-			// HomeFact.DrawImage(ctx2, filteredImages[0]);
-        	// HomeFact.DrawImage(ctx3, filteredImages[1]);
-        	// HomeFact.DrawImage(ctx4, filteredImages[2]);
+			HomeFact.DrawImage(ctx2, filteredImages[0]);
+        	HomeFact.DrawImage(ctx3, filteredImages[1]);
+        	
+			HomeFact.ConvertRawtoImageData(ctx4, machineSuggested);
 		})
 		.catch(function(err){console.error(err); });
 

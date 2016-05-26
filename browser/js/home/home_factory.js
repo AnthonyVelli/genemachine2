@@ -57,7 +57,7 @@ app.factory('HomeFact', function($http, ColorFact){
         var sections = pixelSample.filter(pixelEntire, imgDimensions);
         var approved = pixelSample.returnApproved();
         // var hunted = pixelSample.beginHunt(pixelEntire, imgDimensions);
-        // pixelSample.filterBySection();
+        pixelSample.filterBySection();
         var approvedPostFilter = pixelSample.returnApproved();
         return [approved, approvedPostFilter];
     };

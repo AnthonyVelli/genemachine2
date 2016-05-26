@@ -50,8 +50,6 @@ router.post('/', function(req, res, next){
 				predicted.push(each);
 			}
 		});
-		console.log(predicted.length);
-
 		res.send(predicted);
 	});
 });
